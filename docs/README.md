@@ -22,7 +22,7 @@ Read this once to understand what is included on every HTTP method listed. The w
 >
 > This is the method's description.
 >
-> **Requires:**
+> **Receives:**
 >```json
 >{
 >   "required": string,
@@ -48,7 +48,7 @@ Important notes on this format:
 * The **:parameter** in the URL is a **wildcard**. This means it can accept any string. Usually, it is used to hold identifiers to resources.
 * The **:query?** in the URL is; well, a **query**. More information on HTTP queries can be found [here](https://en.wikipedia.org/wiki/Query_string).
 * The ⚠️`FLAGS` listed are just to catch the eye and remind people of important things.
-* The **Requires** section specifies a JSON object that must be sent in the request via it's body.
+* The **Receives** section specifies a JSON object that must be sent in the request via it's body.
 * The **Returns** section specifies a JSON object that will be received from requests if no errors occur.
 * Finally, the **Errors** section lists all the errors which could be returned from the method.
 
@@ -78,11 +78,11 @@ There are six special types of error:
 
 Other errors may occur, on a method by method basis. Take a look at every method's error section in this document to find out what they are. 
 
-It's important to mention that `UNPARSABLE_JSON` and `INCOMPLETE_JSON` are implicit errors in every HTTP method that has a **Requires** section. Same thing goes for `UNKNOWN_SESSION` and methods which ask for session tokens. The rest of the errors in that list are implicit on any method. 
+It's important to mention that `UNPARSABLE_JSON` and `INCOMPLETE_JSON` are implicit errors in every HTTP method that has a **Receives** section. Same thing goes for `UNKNOWN_SESSION` and methods which ask for session tokens. The rest of the errors in that list are implicit on any method. 
 
 ⚠️ **THESE SPECIAL ERRORS WILL NEVER BE ADDED TO THE ERROR SECTION OF ANY METHOD.** ⚠️
 
-A ⚠️ `FLAG` will be added instead to remind you to handle these errors: `RECEIVES_JSON` for `UNPARSABLE_JSON` or `INCOMPLETE_JSON`, and `AUTH` for `UNKNOWN_SESSION`.
+A ⚠️ `FLAG` will be added instead to remind you to handle these errors: `RECEIVES` for `UNPARSABLE_JSON` or `INCOMPLETE_JSON`, and `AUTH` for `UNKNOWN_SESSION`.
 
 ### Authentication
 
@@ -90,7 +90,7 @@ Some requests require authentication via a session token to be given in the HTML
 
 ```json
 {
-    "session": string
+    "session": session_token
 }
 ```
 
@@ -100,3 +100,189 @@ Most `POST` requests need a session token to work, because they are sensitive ac
 ## HTTP Methods
 
 Keep a link to this section, this is it! Every method listed here is accessible through the API.
+
+### Sign-up as a veterinarian
+##### `POST` /users/vets/ {docsify-ignore}
+
+⚠️ `RECEIVES`
+
+Adds a new veterinarian user account.
+
+**Receives:**
+
+```json
+{
+    "name": string,
+    "lastname": string,
+    "id": number,
+    "email": string,
+    "vet_code": number,
+    "password": string
+}
+```
+
+**Returns:**
+
+```json
+{
+    "success": true,
+    "added": {
+        "name": string,
+        "lastname": string,
+        "id": number,
+        "email": string,
+        "vet_code": number,
+        "password": string,
+        "added": Date //the date when the account was added to the database
+    }
+}
+```
+
+**Errors:**
+* `EMAIL_USED`: Email is currently used by another veterinarian account.
+* `INCORRECT_EMAIL_FORMAT`: Email is not in the form of person@somewhere.com.
+* `INCORRECT_ID`: The ID field is not a 9 digit number.
+
+### Sign-up as a pet owner
+##### `POST` /users/owners/ {docsify-ignore}
+
+⚠️ `RECEIVES`
+
+Adds a new pet owner user account.
+
+**Receives:**
+
+```json
+{
+    "name": string,
+    "lastname": string,
+    "email": string,
+    "password": string
+}
+```
+
+**Returns:**
+
+```json
+{
+    "success": true,
+    "added": {
+        "name": string,
+        "lastname": string,
+        "email": string,
+        "password": string,
+        "added": Date //the date when the account was added to the database
+    }
+}
+```
+
+**Errors:**
+* `EMAIL_USED`: Email is currently used by another pet owner account.
+* `INCORRECT_EMAIL_FORMAT`: Email is not in the form of person@somewhere.com.
+* `INCORRECT_ID`: The ID field is not a 9 digit number.
+
+### Log-in as a veterinarian
+##### `POST` /users/vets/sessions/ {docsify-ignore}
+
+⚠️ `RECEIVES`
+
+Logs in as a veterinarian. Returns the session token required for a lot of tthe methods listed below. In case you're wondering, yes the password is moved here through plain-text, however HTTPS protects from attacks since it is embedded in the request's body.
+
+**Receives:**
+
+```json
+{
+    "email": string,
+    "password": string
+}
+```
+
+**Returns:**
+
+```json
+{
+    "success": true,
+    "session": string
+}
+```
+
+**Errors:**
+* `AUTHENTICATION_FAILED`: The email / password pair did not match any other in the veterinarian database.
+
+### Log-in as a pet owner
+##### `POST` /users/owners/sessions/ {docsify-ignore}
+
+⚠️ `RECEIVES`
+
+Logs in as a pet owner. Returns the session token required for a lot of tthe methods listed below. In case you're wondering, yes the password is moved here through plain-text, however HTTPS protects from attacks since it is embedded in the request's body.
+
+**Receives:**
+
+```json
+{
+    "email": string,
+    "password": string
+}
+```
+
+**Returns:**
+
+```json
+{
+    "success": true,
+    "session": string
+}
+```
+
+**Errors:**
+* `AUTHENTICATION_FAILED`: The email / password pair did not match any other in the pet owner database.
+
+### Log-out as a veterinarian
+##### `DELETE` /users/vets/sessions/ {docsify-ignore}
+
+⚠️ `RECEIVES` `AUTH`
+
+Logs out as a veterinarian. The session token removed is returned on success.
+
+**Receives:**
+
+```json
+{
+    "session": string
+}
+```
+
+**Returns:**
+
+```json
+{
+    "success": true,
+    "session": string
+}
+```
+
+### Log-out as a pet owner
+##### `DELETE` /users/owners/sessions/ {docsify-ignore}
+
+⚠️ `RECEIVES` `AUTH`
+
+Logs out as a pet owner. The session token removed is returned on success.
+
+**Receives:**
+
+```json
+{
+    "session": string
+}
+```
+
+**Returns:**
+
+```json
+{
+    "success": true,
+    "session": string
+}
+```
+
+# 
