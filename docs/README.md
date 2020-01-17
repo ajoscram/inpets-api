@@ -80,7 +80,7 @@ Other errors may occur, on a method by method basis. Take a look at every method
 
 It's important to mention that `UNPARSABLE_JSON` and `INCOMPLETE_JSON` are implicit errors in every HTTP method that has a **Receives** section. Same thing goes for `UNKNOWN_SESSION` and methods which ask for session tokens. The rest of the errors in that list are implicit on any method. 
 
-⚠️ **THESE SPECIAL ERRORS WILL NEVER BE ADDED TO THE ERROR SECTION OF ANY METHOD.** ⚠️
+**THESE ERRORS WILL NEVER BE ADDED TO THE ERROR SECTION OF ANY METHOD.**
 
 A ⚠️ `FLAG` will be added instead to remind you to handle these errors: `RECEIVES` for `UNPARSABLE_JSON` or `INCOMPLETE_JSON`, and `AUTH` for `UNKNOWN_SESSION`.
 
@@ -100,6 +100,19 @@ Most `POST` requests need a session token to work, because they are sensitive ac
 ## HTTP Methods
 
 Keep a link to this section, this is it! Every method listed here is accessible through the API.
+
+### Get strings.JSON
+##### `GET` /strings {docsify-ignore}
+
+Gets the system strings as a JSON. The [strings.json](https://github.com/ajoscram/inpets-api/blob/master/strings.json) file has the data that gets sent back.
+
+**Returns:**
+
+```json
+{
+    //the system strings
+}
+```
 
 ### Sign-up as a veterinarian
 ##### `POST` /users/vets {docsify-ignore}
