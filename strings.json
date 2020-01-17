@@ -1,0 +1,84 @@
+{
+    "sexes": [
+        "M",
+        "F"
+    ],
+    "entry_types": [
+        "TREATMENT",
+        "VACCINE",
+        "DIAGNOSTIC"
+    ],
+    "measures":[
+        "KG",
+        "G",
+        "MG",
+        "L",
+        "ML",
+        "C"
+    ],
+    "species":{
+        "DOG": [
+                "PUG",
+                "GERMAN_SHEPHERD",
+                "ROTTWEILER",
+                "POMERANIAN",
+                "RETRIEVER",
+                "OTHER"
+        ],
+        "CAT": [
+            "ABYSSINIAN",
+            "BALINESE",
+            "BENGAL",
+            "BIRMAN",
+            "CHARTREAUX",
+            "OTHER"
+        ],
+        "HORSE":[
+            "ARABIAN",
+            "MUSTANG",
+            "PONY",
+            "APALOOSA",
+            "FRIESIAN",
+            "OTHER"
+        ]
+    },
+    "routes": {
+        "API_DOC": "/",
+        "STRINGS":"/strings",
+        "VETS":"/users/vets",
+        "OWNERS":"/users/owners",
+        "VETS_SESSIONS":"/users/owners/sessions",
+        "OWNERS_SESSIONS":"/users/owners/sessions",
+        "VETS_EMAIL":"/users/vets/:email",
+        "OWNERS_EMAIL":"/users/owners/:email",
+        "PETS":"/pets",
+        "PET_GENERAL":"/pets/:id/general",
+        "PET_FILE":"/pets/:id/file",
+        "PET_REQUESTS":"/pets/:id/requests",
+        "PET_REQUEST":"/pets/:id/requests/:id",
+        "PET_GRANTS":"/pets/:id/grants",
+        "PET_GRANT":"/pets/:id/grants/:id",
+        "ANY":"*"
+    },
+    "errors":{
+        "UNHANDLED_ROUTE":"UNHANDLED_ROUTE",
+        "NOT_IMPLEMENTED_YET":"NOT_IMPLEMENTED_YET",
+        "DB_ERROR":"DB_ERROR",
+        "UNPARSABLE_JSON":"UNPARSABLE_JSON",
+        "INCOMPLETE_JSON":"INCOMPLETE_JSON",
+        "UNKNOWN_SESSION":"UNKNOWN_SESSION",
+        "EMAIL_USED":"EMAIL_USED",
+        "INCORRECT_EMAIL_FORMAT":"INCORRECT_EMAIL_FORMAT",
+        "INCORRECT_ID":"INCORRECT_ID",
+        "AUTHENTICATION_FAILED":"AUTHENTICATION_FAILED",
+        "UNKNOWN_EMAIL":"UNKNOWN_EMAIL",
+        "UNAUTHORIZED":"UNAUTHORIZED",
+        "UNKNOWN_SEX":"UNKNOWN_SEX",
+        "UNKNOWN_SPECIES":"UNKNOWN_SPECIES",
+        "UNKNOWN_BREED":"UNKNOWN_BREED",
+        "IMGUR_ERROR":"IMGUR_ERROR",
+        "UNKNOWN_PET_ID":"UNKNOWN_PET_ID",
+        "UNKNOWN_REQUEST_ID":"UNKNOWN_REQUEST_ID",
+        "UNKNOWN_GRANT_ID":"UNKNOWN_GRANT_ID"
+    }
+}

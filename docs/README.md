@@ -44,7 +44,7 @@ Read this once to understand what is included on every HTTP method listed. The w
 
 Important notes on this format:
 * Some sections may be omitted if they aren't needed.
-* `HTTP-VERB` would be something like `GET`, `POST` or `DELETE`.
+* `HTTP-VERB` would be something like `GET`, `POST`, `PUT` or `DELETE`.
 * The **:parameter** in the URL is a **wildcard**. This means it can accept any string. Usually, it is used to hold identifiers to resources.
 * The **:query?** in the URL is; well, a **query**. More information on HTTP queries can be found [here](https://en.wikipedia.org/wiki/Query_string).
 * The ⚠️`FLAGS` listed are just to catch the eye and remind people of important things.
@@ -102,7 +102,7 @@ Most `POST` requests need a session token to work, because they are sensitive ac
 Keep a link to this section, this is it! Every method listed here is accessible through the API.
 
 ### Sign-up as a veterinarian
-##### `POST` /users/vets/ {docsify-ignore}
+##### `POST` /users/vets {docsify-ignore}
 
 ⚠️ `RECEIVES`
 
@@ -126,7 +126,7 @@ Adds a new veterinarian user account.
 ```json
 {
     "success": true,
-    "added": {
+    "vet": {
         "name": string,
         "lastname": string,
         "id": number,
@@ -143,7 +143,7 @@ Adds a new veterinarian user account.
 * `INCORRECT_ID`: The ID field is not a 9 digit number.
 
 ### Sign-up as a pet owner
-##### `POST` /users/owners/ {docsify-ignore}
+##### `POST` /users/owners {docsify-ignore}
 
 ⚠️ `RECEIVES`
 
@@ -165,7 +165,7 @@ Adds a new pet owner user account.
 ```json
 {
     "success": true,
-    "added": {
+    "owner": {
         "name": string,
         "lastname": string,
         "email": string,
@@ -180,7 +180,7 @@ Adds a new pet owner user account.
 * `INCORRECT_ID`: The ID field is not a 9 digit number.
 
 ### Log-in as a veterinarian
-##### `POST` /users/vets/sessions/ {docsify-ignore}
+##### `POST` /users/vets/sessions {docsify-ignore}
 
 ⚠️ `RECEIVES`
 
@@ -208,7 +208,7 @@ Logs in as a veterinarian. Returns the session token required for a lot of tthe 
 * `AUTHENTICATION_FAILED`: The email / password pair did not match any other in the veterinarian database.
 
 ### Log-in as a pet owner
-##### `POST` /users/owners/sessions/ {docsify-ignore}
+##### `POST` /users/owners/sessions {docsify-ignore}
 
 ⚠️ `RECEIVES`
 
@@ -236,7 +236,7 @@ Logs in as a pet owner. Returns the session token required for a lot of tthe met
 * `AUTHENTICATION_FAILED`: The email / password pair did not match any other in the pet owner database.
 
 ### Log-out as a veterinarian
-##### `DELETE` /users/vets/sessions/ {docsify-ignore}
+##### `DELETE` /users/vets/sessions {docsify-ignore}
 
 ⚠️ `RECEIVES` `AUTH`
 
@@ -260,7 +260,7 @@ Logs out as a veterinarian. The session token removed is returned on success.
 ```
 
 ### Log-out as a pet owner
-##### `DELETE` /users/owners/sessions/ {docsify-ignore}
+##### `DELETE` /users/owners/sessions {docsify-ignore}
 
 ⚠️ `RECEIVES` `AUTH`
 
@@ -284,7 +284,7 @@ Logs out as a pet owner. The session token removed is returned on success.
 ```
 
 ### Change password as a veterinarian
-##### `PUT` /users/vets/:email/ {docsify-ignore}
+##### `PUT` /users/vets/:email {docsify-ignore}
 
 Creates a new password for the account and sends it to it's email.
 
@@ -300,7 +300,7 @@ Creates a new password for the account and sends it to it's email.
 * `UNKNOWN_EMAIL`: The email did not match any other in the veterinarians database.
 
 ### Change password as a pet owner
-##### `PUT` /users/owners/:email/ {docsify-ignore}
+##### `PUT` /users/owners/:email {docsify-ignore}
 
 Creates a new password for the account and sends it to it's email.
 
@@ -316,7 +316,7 @@ Creates a new password for the account and sends it to it's email.
 * `UNKNOWN_EMAIL`: The email did not match any other in the pet owners database.
 
 ### Add pet
-##### `POST` /pets/ {docsify-ignore}
+##### `POST` /pets {docsify-ignore}
 
 ⚠️ `RECEIVES` `AUTH`
 
@@ -329,10 +329,10 @@ Adds a pet. Only pet owners are allowed to do this.
     "session": string,
     "name": string,
     "description": string,
-    "sex": string, //Must be 'M' or 'F'
+    "sex": string, //Must be in strings.sexes
     "birthday": Date,
-    "species": string, //Must match any species in the strings json
-    "breed": string, //Must match any breed in the strings json
+    "species": string, //Must be in strings.species.keys
+    "breed": string, //Must be in strings.species.SPECIES
     "image": string //Base64 representation of the image
 }
 ```
@@ -342,11 +342,11 @@ Adds a pet. Only pet owners are allowed to do this.
 ```json
 {
     "success": true,
-    "added":{
+    "pet":{
         "pet_id": string,
         "name": string,
         "description": string,
-        "sex": string, //'M' or 'F'
+        "sex": string,
         "birthday": Date,
         "species": string,
         "breed": string,
@@ -356,13 +356,13 @@ Adds a pet. Only pet owners are allowed to do this.
 ```
 **Errors:**
 * `UNAUTHORIZED`: The session string passed does not belong to a pet owner.
-* `UNKNOWN_SEX`: The sex received is not 'M' or 'F'.
-* `UNKNOWN_SPECIES`: The species received was not found in the species array of the strings json.
-* `UNKNOWN_BREED`: The breed received was not found in the breeds array of the strings json.
+* `UNKNOWN_SEX`: The sex received was not found in `strings.sexes`.
+* `UNKNOWN_SPECIES`: The species received was not found in `Object.keys(strings.species)`.
+* `UNKNOWN_BREED`: The breed received was not found in `strings.species.SPECIES`, where `SPECIES` is the name of a species in `Object.keys(strings.species)`.
 * `IMGUR_ERROR`: The image sent could not be uploaded to Imgur.
 
 ### Get a pet's basic information
-##### `GET` /pets/:id/general/ {docsify-ignore}
+##### `GET` /pets/:id/general {docsify-ignore}
 
 ⚠️ `AUTH`
 
@@ -381,7 +381,7 @@ Gets a pet's general information. Only authorized veterinarians and pet owners a
 ```json
 {
     "success": true,
-    "data":{
+    "pet":{
         "id": string,
         "name": string,
         "description": string,
@@ -398,11 +398,11 @@ Gets a pet's general information. Only authorized veterinarians and pet owners a
 * `UNKNOWN_PET_ID`: The pet ID does not match to any pet in the database.
 
 ### Get a pet's complete file
-##### `GET` /pets/:id/ {docsify-ignore}
+##### `GET` /pets/:id/file {docsify-ignore}
 
 ⚠️ `AUTH`
 
-Gets a pet's file. Only authorized veterinarians and pet owners are allowed to do this.
+Gets a pet's file. The pet's general information is also included. Only authorized veterinarians and pet owners are allowed to do this.
 
 **Receives:**
 
@@ -417,7 +417,7 @@ Gets a pet's file. Only authorized veterinarians and pet owners are allowed to d
 ```json
 {
     "success": true,
-    "data":{
+    "pet":{
         "id": string,
         "name": string,
         "description": string,
@@ -427,7 +427,7 @@ Gets a pet's file. Only authorized veterinarians and pet owners are allowed to d
         "breed": string,
         "image": string, //Imgur link to the image
         "file":[
-            //example of a treatment entry
+            //treatment entry
             {
                 "type": "TREATMENT",
                 "name": string,
@@ -443,7 +443,7 @@ Gets a pet's file. Only authorized veterinarians and pet owners are allowed to d
                     "measure": string
                 }
             },
-            //example of a vaccine entry
+            //vaccine entry
             {
                 "type": "VACCINE",
                 "name": string,
@@ -459,7 +459,7 @@ Gets a pet's file. Only authorized veterinarians and pet owners are allowed to d
                     "measure": string
                 }
             },
-            //example of a diagnostic entry
+            //diagnostic entry
             {
                 "type": "DIAGNOSTIC",
                 "name": string,
@@ -473,7 +473,7 @@ Gets a pet's file. Only authorized veterinarians and pet owners are allowed to d
                 "temperature": number, //always in celsius
                 "weight": number //always in kilograms
             }
-            //n entries...
+            //...n entries
         ]
     }
 }
@@ -482,9 +482,140 @@ Gets a pet's file. Only authorized veterinarians and pet owners are allowed to d
 * `UNAUTHORIZED`: The session string passed does not belong to a user authorized to access the pet's file.
 * `UNKNOWN_PET_ID`: The pet ID does not match to any pet in the database.
 
+### Add an entry to a pet's file
+##### `POST` /pets/:id/file {docsify-ignore}
+
+⚠️ `AUTH` `RECEIVES`
+
+Adds a new entry to a pet's file. Only veterinarians are allowed to do this.
+
+**Receives:**
+
+```json
+//treatment entry
+{
+    "session": string,
+    "type": "TREATMENT",
+    "name": string,
+    "added": Date,
+    "description": string,
+    "vet":{
+        "name": string,
+        "lastname": string,
+        "email": string
+    },
+    "amount":{
+        "number": number,
+        "measure": string //must be in strings.measures
+    }   
+}
+
+//vaccine entry
+{
+    "session": string,
+    "type": "VACCINE",
+    "name": string,
+    "added": Date,
+    "description": string,
+    "vet":{
+        "name": string,
+        "lastname": string,
+        "email": string
+    },
+    "amount":{
+        "number": number,
+        "measure": string //must be in strings.measures
+    }
+}
+
+//diagnostic entry
+{
+    "session": string,
+    "type": "DIAGNOSTIC",
+    "name": string,
+    "added": Date,
+    "description": string,
+    "vet":{
+        "name": string,
+        "lastname": string,
+        "email": string
+    },
+    "temperature": number, //always in celsius
+    "weight": number //always in kilograms
+}
+```
+
+**Returns:**
+
+```json
+
+//treatment entry
+{
+    "success": true,
+    "entry":{
+        "type": "TREATMENT",
+        "name": string,
+        "added": Date,
+        "description": string,
+        "vet":{
+            "name": string,
+            "lastname": string,
+            "email": string
+        },
+        "amount":{
+            "number": number,
+            "measure": string
+        }
+    }
+}
+
+//vaccine entry
+{
+    "success": true,
+    "entry":{
+        "type": "VACCINE",
+        "name": string,
+        "added": Date,
+        "description": string,
+        "vet":{
+            "name": string,
+            "lastname": string,
+            "email": string
+        },
+        "amount":{
+            "number": number,
+            "measure": string
+        }
+    }
+}
+
+//diagnostic entry
+{
+    "success": true,
+    "entry":{
+        "type": "DIAGNOSTIC",
+        "name": string,
+        "added": Date,
+        "description": string,
+        "vet":{
+            "name": string,
+            "lastname": string,
+            "email": string
+        },
+        "temperature": number, //always in celsius
+        "weight": number //always in kilograms
+    }
+}
+```
+**Errors:**
+* `UNAUTHORIZED`: The session string passed does not belong to the pet's owner.
+* `UNKNOWN_PET_ID`: The pet ID does not match to any pet in the database.
+* `UNKNOWN_REQUEST_ID`: The request ID does not match to any request to the pet's file.
+* `UNKNOWN_ENTRY_TYPE`: The entry type is not listed in `strings.entry_types`.
+
 
 ### Request pet access
-##### `PUT` /pets/:id/requests/ {docsify-ignore}
+##### `PUT` /pets/:id/requests {docsify-ignore}
 
 ⚠️ `AUTH`
 
@@ -503,7 +634,7 @@ Requests access to a pet's file. Only veterinarians are allowed to do this.
 ```json
 {
     "success": true,
-    "added":{
+    "request":{
         "id": string, //the request id
         "vet":{
             "name": string,
@@ -521,5 +652,201 @@ Requests access to a pet's file. Only veterinarians are allowed to do this.
 * `UNAUTHORIZED`: The session string passed does not belong to a user authorized to access the pet's file.
 * `UNKNOWN_PET_ID`: The pet ID does not match to any pet in the database.
 
+### Get pet access requests
+##### `GET` /pets/:id/requests {docsify-ignore}
+
+⚠️ `AUTH`
+
+Returns requests to access a pet's file. Only pet owners are allowed to do this.
+
+**Receives:**
+
+```json
+{
+    "session": string
+}
+```
+
+**Returns:**
+
+```json
+{
+    "success": true,
+    "requests":[
+        {
+            "id": string, //the request id
+            "vet":{
+                "name": string,
+                "lastname": string,
+                "email": string
+            },
+            "pet":{
+                "name": string,
+                "id": string
+            }
+        }
+        //...n requests
+    ]
+}
+```
+**Errors:**
+* `UNAUTHORIZED`: The session string passed does not belong to the pet's owner.
+* `UNKNOWN_PET_ID`: The pet ID does not match to any pet in the database.
+
+### Remove a pet access request
+##### `DELETE` /pets/:id/requests/:id {docsify-ignore}
+
+⚠️ `AUTH`
+
+Removes a pet access request. Only pet owners are allowed to do this.
+
+**Receives:**
+
+```json
+{
+    "session": string
+}
+```
+
+**Returns:**
+
+```json
+{
+    "success": true,
+    "request":{
+        "id": string, //the request id
+        "vet":{
+            "name": string,
+            "lastname": string,
+            "email": string
+        },
+        "pet":{
+            "name": string,
+            "id": string
+        }
+    }
+}
+```
+**Errors:**
+* `UNAUTHORIZED`: The session string passed does not belong to the pet's owner.
+* `UNKNOWN_PET_ID`: The pet ID does not match to any pet in the database.
+* `UNKNOWN_REQUEST_ID`: The request ID does not match to any request to the pet's file.
+
+### Grant access to a pet's file
+##### `POST` /pets/:id/grants {docsify-ignore}
+
+⚠️ `AUTH` `SIDE_EFFECT`
+
+Grants a veterinarian access to a pet's file. Only pet owners are allowed to do this. This deletes the request as a side-effect.
+
+**Receives:**
+
+```json
+{
+    "session": string,
+    "request_id": string
+}
+```
+
+**Returns:**
+
+```json
+{
+    "success": true,
+    "grant":{
+        "id": string, //the grant id
+        "vet":{
+            "name": string,
+            "lastname": string,
+            "email": string
+        },
+        "pet":{
+            "name": string,
+            "id": string
+        }
+    }
+}
+```
+**Errors:**
+* `UNAUTHORIZED`: The session string passed does not belong to the pet's owner.
+* `UNKNOWN_PET_ID`: The pet ID does not match to any pet in the database.
+* `UNKNOWN_REQUEST_ID`: The request ID does not match to any request to the pet's file.
+
+### Get access grants to a pet's file
+##### `GET` /pets/:id/grants {docsify-ignore}
+
+⚠️ `AUTH`
+
+Gets all access grants to a particular pet's file. Only pet owners are allowed to do this.
+
+**Receives:**
+
+```json
+{
+    "session": string
+}
+```
+
+**Returns:**
+
+```json
+{
+    "success": true,
+    "grant":{
+        "id": string, //the grant id
+        "vet":{
+            "name": string,
+            "lastname": string,
+            "email": string
+        },
+        "pet":{
+            "name": string,
+            "id": string
+        }
+    }
+}
+```
+**Errors:**
+* `UNAUTHORIZED`: The session string passed does not belong to the pet's owner.
+* `UNKNOWN_PET_ID`: The pet ID does not match to any pet in the database.
+
+### Revoke access to a pet's file
+##### `DELETE` /pets/:id/grants/:id {docsify-ignore}
+
+⚠️ `AUTH`
+
+Revokes access granted to a pet's file from a veterinarian. Returns the grant deleted. Only pet owners are allowed to do this.
+
+**Receives:**
+
+```json
+{
+    "session": string
+}
+```
+
+**Returns:**
+
+```json
+{
+    "success": true,
+    "grant":{
+        "id": string, //the grant id
+        "vet":{
+            "name": string,
+            "lastname": string,
+            "email": string
+        },
+        "pet":{
+            "name": string,
+            "id": string
+        }
+    }
+}
+```
+**Errors:**
+* `UNAUTHORIZED`: The session string passed does not belong to the pet's owner.
+* `UNKNOWN_PET_ID`: The pet ID does not match to any pet in the database.
+* `UNKNOWN_GRANT_ID`: The grant ID does not match to any grant to the pet's file.
 
 # 
