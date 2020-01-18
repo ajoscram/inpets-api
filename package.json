@@ -1,0 +1,35 @@
+{
+  "name": "inpets-api",
+  "version": "1.0.0",
+  "description": "Backend server for the inPETS platform.",
+  "main": "server.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ajoscram/inpets-api.git"
+  },
+  "keywords": [
+    "inPETS",
+    "server",
+    "MongoDB",
+    "Express"
+  ],
+  "author": "Alejandro Schmidt",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ajoscram/inpets-api/issues"
+  },
+  "homepage": "https://github.com/ajoscram/inpets-api#readme",
+  "dependencies": {
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "imgur": "^0.3.1",
+    "mongodb": "^3.5.1",
+    "nodemailer": "^6.4.2"
+  }
+}

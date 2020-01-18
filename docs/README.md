@@ -101,7 +101,7 @@ Most `POST` requests need a session token to work, because they are sensitive ac
 
 Keep a link to this section, this is it! Every method listed here is accessible through the API.
 
-### Get strings.JSON
+### Get strings.json
 ##### `GET` /strings {docsify-ignore}
 
 Gets the system strings as a JSON. The [strings.json](https://github.com/ajoscram/inpets-api/blob/master/strings.json) file has the data that gets sent back.
@@ -707,7 +707,7 @@ Returns requests to access a pet's file. Only pet owners are allowed to do this.
 * `UNKNOWN_PET_ID`: The pet ID does not match to any pet in the database.
 
 ### Remove a pet access request
-##### `DELETE` /pets/:id/requests/:id {docsify-ignore}
+##### `DELETE` /pets/:id/requests/:id_ {docsify-ignore}
 
 ⚠️ `AUTH`
 
@@ -824,7 +824,7 @@ Gets all access grants to a particular pet's file. Only pet owners are allowed t
 * `UNKNOWN_PET_ID`: The pet ID does not match to any pet in the database.
 
 ### Revoke access to a pet's file
-##### `DELETE` /pets/:id/grants/:id {docsify-ignore}
+##### `DELETE` /pets/:id/grants/:id_ {docsify-ignore}
 
 ⚠️ `AUTH`
 
