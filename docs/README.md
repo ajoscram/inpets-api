@@ -8,7 +8,7 @@ Below you can find different resources which may be of interest to you:
 
 * [Software Requirements Specification](https://ajoscram.github.io/web-dev/resources/project/SRS.pdf): The document which defines the scope of this API. Written in spanish.
 * [Repository](https://github.com/ajoscram/inpets-api): The public GitHub repo for this project.
-* [API Link](): Copy this link to access the inPets API server deployed on Heroku. Clicking on it will show this very document you're reading.
+* [API Link](https://inpets-api.herokuapp.com/): Copy this link to access the inPets API server deployed on Heroku. Clicking on it will redirect you to this very document you're reading.
 * [inPets](): The actual working platform deployed on GitHub pages.
 
 ---
