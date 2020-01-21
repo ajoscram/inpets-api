@@ -11,5 +11,5 @@ async function upload(image){
 }
 
 module.exports = {
-    "upload": upload
+    upload
 };

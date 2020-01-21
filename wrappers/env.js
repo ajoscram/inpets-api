@@ -24,6 +24,9 @@ const db = {
     }
 }
 //email variables
+const email = {
+
+}
 //errors
 const errors = strings.errors;
 //constants
@@ -39,6 +42,7 @@ module.exports = {
     strings,
     server,
     db,
+    email,
     errors,
     constants
 };

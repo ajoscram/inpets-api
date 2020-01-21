@@ -27,5 +27,5 @@ async function send(password, email){
 }
 
 module.exports = {
-    "mailPassword": mailPassword
+    send
 }

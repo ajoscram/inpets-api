@@ -10,10 +10,6 @@ const routes = env.server.routes;
 const errors = env.errors;
 const port = env.server.PORT;
 
-//express setup
-const app = express();
-app.use(express.json({limit: '50mb', strict: 'true'}));
-
 //general purpose functions
 async function createSuccessfulResponse(name, data = null){
     if(data){
@@ -29,9 +25,27 @@ async function createUnsuccessfulResponse(error){
     return { "success": false, "error": error };
 }
 
-//HTTP ROUTING
+//middleware
+function validateJSON(error, request, response, next){
+    if(error instanceof SyntaxError)
+        createUnsuccessfulResponse(errors.UNPARSABLE_JSON).then((json) => {
+            response.send(json);
+        });
+    else
+        next();
+}
 
-//get api doc
+//middleware incomplete_json in case function is missing session token
+//midddleware unknown_session for authentication
+
+//express setup
+const app = express();
+app.use(express.json({ limit: '50mb', strict: 'true' }));
+app.use(validateJSON);
+
+//http routing
+
+//Get API doc
 app.get(routes.API_DOC, (request, response) => {
     response.redirect("https://ajoscram.github.io/inpets-api/#/");
 });
