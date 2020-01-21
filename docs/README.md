@@ -125,12 +125,14 @@ Adds a new veterinarian user account.
 
 ```json
 {
-    "name": string,
-    "lastname": string,
-    "id": number,
-    "email": string,
-    "vet_code": number,
-    "password": string
+    "vet": {
+        "name": string,
+        "lastname": string,
+        "country_id": number,
+        "email": string,
+        "vet_code": number,
+        "password": string
+    }
 }
 ```
 
@@ -140,9 +142,10 @@ Adds a new veterinarian user account.
 {
     "success": true,
     "vet": {
+        "id": string,
         "name": string,
         "lastname": string,
-        "id": number,
+        "country_id": number,
         "email": string,
         "vet_code": number,
         "password": string
@@ -166,10 +169,12 @@ Adds a new pet owner user account.
 
 ```json
 {
-    "name": string,
-    "lastname": string,
-    "email": string,
-    "password": string
+    "owner": {
+        "name": string,
+        "lastname": string,
+        "email": string,
+        "password": string
+    }
 }
 ```
 
@@ -179,6 +184,7 @@ Adds a new pet owner user account.
 {
     "success": true,
     "owner": {
+        "id": string,
         "name": string,
         "lastname": string,
         "email": string,
@@ -225,7 +231,7 @@ Logs in as a veterinarian. Returns the session token required for a lot of tthe 
 
 ⚠️ `RECEIVES`
 
-Logs in as a pet owner. Returns the session token required for a lot of tthe methods listed below. In case you're wondering, yes the password is moved here through plain-text, however HTTPS protects from attacks since it is embedded in the request's body.
+Logs in as a pet owner. Returns the session token required for a lot of the methods listed below. In case you're wondering, yes the password is moved here through plain-text, however HTTPS protects from attacks since it is embedded in the request's body.
 
 **Receives:**
 
@@ -339,14 +345,16 @@ Adds a pet. Only pet owners are allowed to do this.
 
 ```json
 {
-    "session": string,
-    "name": string,
-    "description": string,
-    "sex": string, //Must be in strings.sexes
-    "birthday": Date,
-    "species": string, //Must be in strings.species.keys
-    "breed": string, //Must be in strings.species.SPECIES
-    "image": string //Base64 representation of the image
+    "pet": {
+        "session": string,
+        "name": string,
+        "description": string,
+        "sex": string, //Must be in strings.sexes
+        "birthday": Date,
+        "species": string, //Must be in strings.species.keys
+        "breed": string, //Must be in strings.species.SPECIES
+        "image": string //Base64 representation of the image
+    }
 }
 ```
 
@@ -356,7 +364,7 @@ Adds a pet. Only pet owners are allowed to do this.
 {
     "success": true,
     "pet":{
-        "pet_id": string,
+        "id": string,
         "name": string,
         "description": string,
         "sex": string,
@@ -442,6 +450,7 @@ Gets a pet's file. The pet's general information is also included. Only authoriz
         "file":[
             //treatment entry
             {
+                "id": string,
                 "type": "TREATMENT",
                 "name": string,
                 "added": Date,
@@ -458,6 +467,7 @@ Gets a pet's file. The pet's general information is also included. Only authoriz
             },
             //vaccine entry
             {
+                "id": string,
                 "type": "VACCINE",
                 "name": string,
                 "added": Date,
@@ -474,6 +484,7 @@ Gets a pet's file. The pet's general information is also included. Only authoriz
             },
             //diagnostic entry
             {
+                "id": string,s
                 "type": "DIAGNOSTIC",
                 "name": string,
                 "added": Date,
@@ -508,64 +519,7 @@ Adds a new entry to a pet's file. Only veterinarians are allowed to do this.
 //treatment entry
 {
     "session": string,
-    "type": "TREATMENT",
-    "name": string,
-    "added": Date,
-    "description": string,
-    "vet":{
-        "name": string,
-        "lastname": string,
-        "email": string
-    },
-    "amount":{
-        "number": number,
-        "measure": string //must be in strings.measures
-    }   
-}
-
-//vaccine entry
-{
-    "session": string,
-    "type": "VACCINE",
-    "name": string,
-    "added": Date,
-    "description": string,
-    "vet":{
-        "name": string,
-        "lastname": string,
-        "email": string
-    },
-    "amount":{
-        "number": number,
-        "measure": string //must be in strings.measures
-    }
-}
-
-//diagnostic entry
-{
-    "session": string,
-    "type": "DIAGNOSTIC",
-    "name": string,
-    "added": Date,
-    "description": string,
-    "vet":{
-        "name": string,
-        "lastname": string,
-        "email": string
-    },
-    "temperature": number, //always in celsius
-    "weight": number //always in kilograms
-}
-```
-
-**Returns:**
-
-```json
-
-//treatment entry
-{
-    "success": true,
-    "entry":{
+    "entry": {
         "type": "TREATMENT",
         "name": string,
         "added": Date,
@@ -577,14 +531,14 @@ Adds a new entry to a pet's file. Only veterinarians are allowed to do this.
         },
         "amount":{
             "number": number,
-            "measure": string
+            "measure": string //must be in strings.measures
         }
-    }
+    }   
 }
 
 //vaccine entry
 {
-    "success": true,
+    "session": string,
     "entry":{
         "type": "VACCINE",
         "name": string,
@@ -597,6 +551,73 @@ Adds a new entry to a pet's file. Only veterinarians are allowed to do this.
         },
         "amount":{
             "number": number,
+            "measure": string //must be in strings.measures
+        }
+    }
+}
+
+//diagnostic entry
+{
+    "session": string,
+    "entry": {
+        "type": "DIAGNOSTIC",
+        "name": string,
+        "added": Date,
+        "description": string,
+        "vet":{
+            "name": string,
+            "lastname": string,
+            "email": string
+        },
+        "temperature": number, //always in celsius
+        "weight": number //always in kilograms
+    }
+}
+```
+
+**Returns:**
+
+```json
+
+//treatment entry
+{
+    "success": true,
+    "entry":{
+        "id": string,
+        "type": "TREATMENT",
+        "name": string,
+        "added": Date,
+        "description": string,
+        "vet":{
+            "id": string,
+            "name": string,
+            "lastname": string,
+            "email": string
+        },
+        "amount":{
+            "number": number,
+            "measure": string
+        }
+    }
+}
+
+//vaccine entry
+{
+    "success": true,
+    "entry":{
+        "id": string,
+        "type": "VACCINE",
+        "name": string,
+        "added": Date,
+        "description": string,
+        "vet":{
+            "id": string,
+            "name": string,
+            "lastname": string,
+            "email": string
+        },
+        "amount":{
+            "number": number,
             "measure": string
         }
     }
@@ -606,11 +627,13 @@ Adds a new entry to a pet's file. Only veterinarians are allowed to do this.
 {
     "success": true,
     "entry":{
+        "id": string,
         "type": "DIAGNOSTIC",
         "name": string,
         "added": Date,
         "description": string,
         "vet":{
+            "id": string,
             "name": string,
             "lastname": string,
             "email": string
@@ -650,13 +673,14 @@ Requests access to a pet's file. Only veterinarians are allowed to do this.
     "request":{
         "id": string, //the request id
         "vet":{
+            "id": string,
             "name": string,
             "lastname": string,
             "email": string
         },
         "pet":{
-            "name": string,
-            "id": string
+            "id": string,
+            "name": string
         }
     }
 }
@@ -689,13 +713,14 @@ Returns requests to access a pet's file. Only pet owners are allowed to do this.
         {
             "id": string, //the request id
             "vet":{
+                "id": string,
                 "name": string,
                 "lastname": string,
                 "email": string
             },
             "pet":{
-                "name": string,
-                "id": string
+                "id": string,
+                "name": string
             }
         }
         //...n requests
@@ -729,13 +754,14 @@ Removes a pet access request. Only pet owners are allowed to do this.
     "request":{
         "id": string, //the request id
         "vet":{
+            "id": string,
             "name": string,
             "lastname": string,
             "email": string
         },
         "pet":{
-            "name": string,
-            "id": string
+            "id": string,
+            "name": string
         }
     }
 }
@@ -769,13 +795,14 @@ Grants a veterinarian access to a pet's file. Only pet owners are allowed to do 
     "grant":{
         "id": string, //the grant id
         "vet":{
+            "id": string,
             "name": string,
             "lastname": string,
             "email": string
         },
         "pet":{
-            "name": string,
-            "id": string
+            "id": string,
+            "name": string
         }
     }
 }
@@ -808,13 +835,14 @@ Gets all access grants to a particular pet's file. Only pet owners are allowed t
     "grant":{
         "id": string, //the grant id
         "vet":{
+            "id": string,
             "name": string,
             "lastname": string,
             "email": string
         },
         "pet":{
-            "name": string,
-            "id": string
+            "id": string,
+            "name": string
         }
     }
 }
@@ -846,13 +874,14 @@ Revokes access granted to a pet's file from a veterinarian. Returns the grant de
     "grant":{
         "id": string, //the grant id
         "vet":{
+            "id": string,
             "name": string,
             "lastname": string,
             "email": string
         },
         "pet":{
-            "name": string,
-            "id": string
+            "id": string,
+            "name": string
         }
     }
 }

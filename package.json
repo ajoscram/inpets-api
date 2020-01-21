@@ -20,7 +20,7 @@
     "Express"
   ],
   "author": "Alejandro Schmidt",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/ajoscram/inpets-api/issues"
   },

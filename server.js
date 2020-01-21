@@ -38,7 +38,7 @@ app.get(routes.API_DOC, (request, response) => {
 //Get strings.json
 app.get(routes.STRINGS, (request, response) => {
     createSuccessfulResponse("strings", env.strings).then((json) => {
-        response.sendFile(json);
+        response.send(json);
     });
 });
 
