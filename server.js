@@ -3,11 +3,12 @@ const express = require('express');
 
 //local requires and imports
 const env = require('./wrappers/env.js');
+const db = require('./wrappers/db.js')
 
 //initialize environment variables
 const routes = env.server.routes;
 const errors = env.errors;
-const port = env.server.port;
+const port = env.server.PORT;
 
 //express setup
 const app = express();
@@ -44,9 +45,7 @@ app.get(routes.STRINGS, (request, response) => {
 
 //Sign-up as a veterinarian
 app.post(routes.VETS, (request, response) => {
-    createUnsuccessfulResponse(errors.NOT_IMPLEMENTED_YET).then((json) => {
-        response.send(json);
-    });
+    
 });
 
 //Sign-up as a pet owner
@@ -175,13 +174,10 @@ app.all(routes.ANY, (request, response) => {
     });
 });
 
-//Connecting to the database, and opening the server for requests
-app.listen(port, () => console.log("Listening on port " + port + "..."));
-/*dataAccess.connect((error) => {
-    if(error){
+db.connect()
+    .then(() => {
+        app.listen(port, () => console.log("Listening on port " + port + "..."));
+    })
+    .catch((error) => {
         console.log(error);
-        process.exit(1);
-    }
-    else
-        
-});*/
+    });
