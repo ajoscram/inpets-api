@@ -344,8 +344,8 @@ Adds a pet. Only pet owners are allowed to do this.
 
 ```json
 {
+    "session": string,
     "pet": {
-        "session": string,
         "name": string,
         "description": string,
         "sex": string, //Must be in strings.sexes

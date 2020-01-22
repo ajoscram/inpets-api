@@ -46,6 +46,10 @@ async function add(vet){
     }
 }
 
+async function get(session){
+    return await users.get(session, VETS, SESSIONS);
+}
+
 async function login(email, password){
     return await users.login(email, password, VETS, SESSIONS);
 }
@@ -60,6 +64,7 @@ async function changePassword(email){
 
 module.exports = {
     add,
+    get,
     login,
     logout,
     changePassword

@@ -44,6 +44,7 @@ const constants = {
     entry_types: strings.entry_types,
     measures: strings.measures,
     species: strings.species
+    //species are arrays with each species' breed
 }
 console.log('Loaded!');
 

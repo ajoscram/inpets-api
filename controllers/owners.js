@@ -36,6 +36,10 @@ async function add(owner){
     }
 }
 
+async function get(session){
+    return await users.get(session, OWNERS, SESSIONS);
+}
+
 async function login(email, password){
     console.log(email + " " + password);
     console.log(OWNERS + " " +SESSIONS);
@@ -52,6 +56,7 @@ async function changePassword(email){
 
 module.exports = {
     add,
+    get,
     login,
     logout,
     changePassword

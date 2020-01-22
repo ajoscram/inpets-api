@@ -11,6 +11,21 @@ function validateEmailFormat(email){
     return re.test(email);
 }
 
+async function get(session_id, collection, sessions_collection){
+    if(!session_id)
+        throw errors.INCOMPLETE_JSON;
+    
+    const session = await db.get(sessions_collection, { "_id": db.getObjectID(session_id) });
+    if(!session)
+        throw errors.UNAUTHORIZED;
+        
+    const user = await db.get(collection, { "email": session.email });
+    if(!user)
+        throw errors.UNAUTHORIZED;
+
+    return user;
+}
+
 async function login(email, password, collection, sessions_collection){
     if(!email || !password)
         throw errors.INCOMPLETE_JSON;
@@ -59,6 +74,7 @@ async function changePassword(email, collection){
 }
 
 module.exports = {
+    get,
     validateEmailFormat,
     login,
     logout,

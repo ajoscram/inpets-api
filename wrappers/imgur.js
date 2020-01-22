@@ -1,9 +1,9 @@
 var imgur = require('imgur');
-var error = require('./data.js').errors.IMGUR_ERROR;
+var error = require('./env.js').errors.IMGUR_ERROR;
 
 async function upload(image){
     try{
-        return await imgur.uploadBase64(image);
+        return (await imgur.uploadBase64(image)).data.link;
     } catch(imgur_error){
         console.error(imgur_error.message);
         throw error;

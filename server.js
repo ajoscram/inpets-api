@@ -40,8 +40,27 @@ function validateJSON(error, request, response, next){
         next();
 }
 
-//middleware incomplete_json in case function is missing session token
-//midddleware unknown_session for authentication
+//midddleware for authentication
+function authenticateOwner(request, response, next){
+    owners.get(request.body.session).then(owner => {
+        request.body.owner = owner;
+        next();
+    }).catch(error => {
+        createUnsuccessfulResponse(error).then(json => {
+            response.send(json);
+        });
+    });
+}
+function authenticateVet(request, response, next){
+    vets.get(request.body.session).then(vet => {
+        request.body.vet = vet;
+        next();
+    }).catch(error => {
+        createUnsuccessfulResponse(error).then(json => {
+            response.send(json);
+        });
+    });
+}
 
 //express setup
 const app = express();
@@ -113,7 +132,7 @@ app.delete(routes.OWNERS_SESSIONS, (request, response) => {
 //Change password as a veterinarian
 app.put(routes.VET, (request, response) => {
     vets.changePassword(request.params.email)
-        .then( () => { return createSuccessfulResponse(); })
+        .then(() => { return createSuccessfulResponse(); })
         .catch(error => { return createUnsuccessfulResponse(error); })
         .then(json => { response.send(json); });
 });
@@ -127,10 +146,12 @@ app.put(routes.OWNER, (request, response) => {
 });
 
 //Add pet
-app.post(routes.PETS, (request, response) => {
-    createUnsuccessfulResponse(errors.NOT_IMPLEMENTED_YET).then((json) => {
-        response.send(json);
-    });
+app.post(routes.PETS, authenticateOwner, (request, response) => {
+    pets.add(request.body.pet, request.body.owner.email)
+        .then(added => { return createSuccessfulResponse("pet", added); })
+        .catch(error => { return createUnsuccessfulResponse(error); })
+        .then(json => { response.send(json); });
+
 });
 
 //Get a pet's basic information
