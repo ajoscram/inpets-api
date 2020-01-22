@@ -52,10 +52,30 @@ function authenticateOwner(request, response, next){
         });
     });
 }
+
 function authenticateVet(request, response, next){
     vets.get(request.body.session).then(vet => {
         request.body.vet = vet;
         next();
+    }).catch(error => {
+        createUnsuccessfulResponse(error).then(json => {
+            response.send(json);
+        });
+    });
+}
+
+function authenticate(request, response, next){
+    owners.get(request.body.session).then(owner => {
+        request.body.owner = owner;
+        next();
+    }).catch(error => {
+        if(error == errors.UNAUTHORIZED){
+            vets.get(request.body.session).then(vet => {
+                request.body.vet = vet;
+                next();
+            });
+        } else
+            throw error;
     }).catch(error => {
         createUnsuccessfulResponse(error).then(json => {
             response.send(json);
@@ -157,10 +177,16 @@ app.post(routes.PETS, authenticateOwner, (request, response) => {
 });
 
 //Get a pet's basic information
-app.get(routes.PET_GENERAL, (request, response) => {
-    createUnsuccessfulResponse(errors.NOT_IMPLEMENTED_YET).then((json) => {
-        response.send(json);
-    });
+app.get(routes.PET_GENERAL, authenticate, (request, response) => {
+    let filter = null;
+    if(request.body.owner)
+        filter = { owner: request.body.owner.email };
+    else
+        filter = { vets: [ request.body.vet.email ] }
+    pets.get(request.params.id, filter)
+        .then(added => { return createSuccessfulResponse("pet", added); })
+        .catch(error => { return createUnsuccessfulResponse(error); })
+        .then(json => { response.send(json); });
 });
 
 //Get a pet's complete file

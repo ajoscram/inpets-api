@@ -46,6 +46,18 @@ async function add(pet, owner_email){
     return await db.add(PETS, data);
 }
 
+async function get(id, filter){
+    if(!id)
+        throw errors.INCOMPLETE_JSON;
+    filter._id = db.getObjectID(id);
+    console.log(filter);
+    const pet = await db.get(PETS, filter);
+    if(!pet)
+        throw errors.UNKNOWN_PET_ID;
+    return pet;
+}
+
 module.exports = {
-    add
+    add,
+    get
 }
