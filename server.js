@@ -3,7 +3,12 @@ const express = require('express');
 
 //local requires and imports
 const env = require('./wrappers/env.js');
-const db = require('./wrappers/db.js')
+const db = require('./wrappers/db.js');
+
+//controllers
+const vets = require('./controllers/vets.js');
+const owners = require('./controllers/owners.js');
+const pets = require('./controllers/pets.js');
 
 //initialize environment variables
 const routes = env.server.routes;
@@ -59,14 +64,18 @@ app.get(routes.STRINGS, (request, response) => {
 
 //Sign-up as a veterinarian
 app.post(routes.VETS, (request, response) => {
-    
+    vets.add(request.body.vet)
+        .then(added => { return createSuccessfulResponse("vet", added); })
+        .catch(error => { return createUnsuccessfulResponse(error); })
+        .then(json => { response.send(json); });
 });
 
 //Sign-up as a pet owner
 app.post(routes.OWNERS, (request, response) => {
-    createUnsuccessfulResponse(errors.NOT_IMPLEMENTED_YET).then((json) => {
-        response.send(json);
-    });
+    owners.add(request.body.owner)
+        .then(added => { return createSuccessfulResponse("owner", added); })
+        .catch(error => { return createUnsuccessfulResponse(error); })
+        .then(json => { response.send(json); });
 });
 
 //Log-in as a veterinarian

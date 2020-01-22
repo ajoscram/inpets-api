@@ -156,7 +156,7 @@ Adds a new veterinarian user account.
 **Errors:**
 * `EMAIL_USED`: Email is currently used by another veterinarian account.
 * `INCORRECT_EMAIL_FORMAT`: Email is not in the form of person@somewhere.com.
-* `INCORRECT_ID`: The ID field is not a 9 digit number.
+* `INCORRECT_COUNTRY_ID`: The ID field is not a 9 digit number.
 
 ### Sign-up as a pet owner
 ##### `POST` /users/owners {docsify-ignore}
@@ -196,7 +196,6 @@ Adds a new pet owner user account.
 **Errors:**
 * `EMAIL_USED`: Email is currently used by another pet owner account.
 * `INCORRECT_EMAIL_FORMAT`: Email is not in the form of person@somewhere.com.
-* `INCORRECT_ID`: The ID field is not a 9 digit number.
 
 ### Log-in as a veterinarian
 ##### `POST` /users/vets/sessions {docsify-ignore}

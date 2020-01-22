@@ -4,7 +4,7 @@ const env = require('./env.js');
 
 const database = {
     url: env.db.URL,
-    name: env.db.name,
+    name: env.db.NAME,
     options: { useUnifiedTopology: true },
     instance: null
 }
@@ -46,8 +46,7 @@ async function query(collection, filter){
 
 async function add(collection, object){
     try{
-        result = await database.instance.collection(collection).insertOne(object);
-        return result.ops[0];
+        return (await database.instance.collection(collection).insertOne(object)).ops[0];
     } catch(mongo_error){
         console.log(mongo_error);
         throw env.errors.DB_ERROR;
