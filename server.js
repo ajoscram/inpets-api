@@ -1,5 +1,6 @@
 //lib imports
 const express = require('express');
+const cors = require('cors');
 
 //local requires and imports
 const env = require('./wrappers/env.js');
@@ -64,6 +65,7 @@ function authenticateVet(request, response, next){
 
 //express setup
 const app = express();
+app.use(cors());
 app.use(express.json({ limit: '50mb', strict: 'true' }));
 app.use(validateJSON);
 
