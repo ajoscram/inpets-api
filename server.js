@@ -16,7 +16,7 @@ const errors = env.errors;
 const port = env.server.PORT;
 
 //general purpose functions
-async function createSuccessfulResponse(name, data = null){
+async function createSuccessfulResponse(name = null, data = null){
     if(data){
         response = { "success": true };
         response[name] = data;
@@ -112,16 +112,18 @@ app.delete(routes.OWNERS_SESSIONS, (request, response) => {
 
 //Change password as a veterinarian
 app.put(routes.VET, (request, response) => {
-    createUnsuccessfulResponse(errors.NOT_IMPLEMENTED_YET).then((json) => {
-        response.send(json);
-    });
+    vets.changePassword(request.params.email)
+        .then( () => { return createSuccessfulResponse(); })
+        .catch(error => { return createUnsuccessfulResponse(error); })
+        .then(json => { response.send(json); });
 });
 
 //Change password as a pet owner
 app.put(routes.OWNER, (request, response) => {
-    createUnsuccessfulResponse(errors.NOT_IMPLEMENTED_YET).then((json) => {
-        response.send(json);
-    });
+    owners.changePassword(request.params.email)
+        .then( () => { return createSuccessfulResponse(); })
+        .catch(error => { return createUnsuccessfulResponse(error); })
+        .then(json => { response.send(json); });
 });
 
 //Add pet

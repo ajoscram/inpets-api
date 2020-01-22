@@ -1,15 +1,11 @@
-const bcrypt = require('bcryptjs')
+const bcrypt = require('bcryptjs');
 const db = require('../wrappers/db.js');
 const env = require('../wrappers/env.js');
+const users = require('./users.js');
 
 const errors = env.errors;
 const OWNERS = env.db.collections.OWNERS;
 const SESSIONS = env.db.collections.OWNER_SESSIONS;
-
-function validateEmailFormat(email){
-    let re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    return re.test(email);
-}
 
 async function validate(owner){
     if( !owner.email ||
@@ -17,7 +13,7 @@ async function validate(owner){
         !owner.lastname ||
         !owner.password)
         throw errors.INCOMPLETE_JSON;
-    if(!validateEmailFormat(owner.email))
+    if(!users.validateEmailFormat(owner.email))
         throw errors.INCORRECT_EMAIL_FORMAT;
     else if (await db.get(OWNERS, { email: owner.email }) )
         throw errors.EMAIL_USED;
@@ -41,37 +37,22 @@ async function add(owner){
 }
 
 async function login(email, password){
-    if(!email || !password)
-        throw errors.INCOMPLETE_JSON;
-    
-    const owner = await db.get(OWNERS, { "email": email });
-    if(!owner)
-        throw errors.AUTHENTICATION_FAILED;
-    
-    if(!bcrypt.compareSync(password, owner.password))
-        throw errors.AUTHENTICATION_FAILED;
-    
-    const data = {
-        "opened": Date(),
-        "closed": null,
-        "email": email,
-        "open": true
-    }
-    
-    return (await db.add(SESSIONS, data))._id;
+    console.log(email + " " + password);
+    console.log(OWNERS + " " +SESSIONS);
+    return await users.login(email, password, OWNERS, SESSIONS);
 }
 
 async function logout(session){
-    if(!session)
-        throw errors.INCOMPLETE_JSON;
-    let filter = { "_id": db.getObjectID(session), "open": true };
-    let update = { "open": false, "closed": Date() }
-    session = (await db.upget(SESSIONS, filter, { "$set": update }))._id;
-    return session;
+    return await users.logout(session, SESSIONS);
+}
+
+async function changePassword(email){
+    return await users.changePassword(email, OWNERS);
 }
 
 module.exports = {
     add,
     login,
-    logout
+    logout,
+    changePassword
 }
