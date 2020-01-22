@@ -40,6 +40,38 @@ async function add(owner){
     }
 }
 
+async function login(email, password){
+    if(!email || !password)
+        throw errors.INCOMPLETE_JSON;
+    
+    const owner = await db.get(OWNERS, { "email": email });
+    if(!owner)
+        throw errors.AUTHENTICATION_FAILED;
+    
+    if(!bcrypt.compareSync(password, owner.password))
+        throw errors.AUTHENTICATION_FAILED;
+    
+    const data = {
+        "opened": Date(),
+        "closed": null,
+        "email": email,
+        "open": true
+    }
+    
+    return (await db.add(SESSIONS, data))._id;
+}
+
+async function logout(session){
+    if(!session)
+        throw errors.INCOMPLETE_JSON;
+    let filter = { "_id": db.getObjectID(session), "open": true };
+    let update = { "open": false, "closed": Date() }
+    session = (await db.upget(SESSIONS, filter, { "$set": update }))._id;
+    return session;
+}
+
 module.exports = {
-    add
+    add,
+    login,
+    logout
 }

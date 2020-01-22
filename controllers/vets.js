@@ -50,6 +50,38 @@ async function add(vet){
     }
 }
 
+async function login(email, password){
+    if(!email || !password)
+        throw errors.INCOMPLETE_JSON;
+    
+    const vet = await db.get(VETS, { "email": email });
+    if(!vet)
+        throw errors.AUTHENTICATION_FAILED;
+    
+    if(!bcrypt.compareSync(password, vet.password))
+        throw errors.AUTHENTICATION_FAILED;
+    
+    const data = {
+        "opened": Date(),
+        "closed": null,
+        "email": email,
+        "open": true
+    }
+    
+    return (await db.add(SESSIONS, data))._id;
+}
+
+async function logout(session){
+    if(!session)
+        throw errors.INCOMPLETE_JSON;
+    let filter = { "_id": db.getObjectID(session), "open": true };
+    let update = { "open": false, "closed": Date() }
+    session = (await db.upget(SESSIONS, filter, { "$set": update }))._id;
+    return session;
+}
+
 module.exports = {
-    add
+    add,
+    login,
+    logout
 }

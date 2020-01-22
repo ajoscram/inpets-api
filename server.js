@@ -80,30 +80,34 @@ app.post(routes.OWNERS, (request, response) => {
 
 //Log-in as a veterinarian
 app.post(routes.VETS_SESSIONS, (request, response) => {
-    createUnsuccessfulResponse(errors.NOT_IMPLEMENTED_YET).then((json) => {
-        response.send(json);
-    });
+    vets.login(request.body.email, request.body.password)
+        .then(added => { return createSuccessfulResponse("session", added); })
+        .catch(error => { return createUnsuccessfulResponse(error); })
+        .then(json => { response.send(json); });
 });
 
 //Log-in as a pet owner
 app.post(routes.OWNERS_SESSIONS, (request, response) => {
-    createUnsuccessfulResponse(errors.NOT_IMPLEMENTED_YET).then((json) => {
-        response.send(json);
-    });
+    owners.login(request.body.email, request.body.password)
+        .then(added => { return createSuccessfulResponse("session", added); })
+        .catch(error => { return createUnsuccessfulResponse(error); })
+        .then(json => { response.send(json); });
 });
 
 //Log-out as a veterinarian
 app.delete(routes.VETS_SESSIONS, (request, response) => {
-    createUnsuccessfulResponse(errors.NOT_IMPLEMENTED_YET).then((json) => {
-        response.send(json);
-    });
+    vets.logout(request.body.session)
+        .then(removed => { return createSuccessfulResponse("session", removed); })
+        .catch(error => { return createUnsuccessfulResponse(error); })
+        .then(json => { response.send(json); });
 });
 
 //Log-out as a pet owner
 app.delete(routes.OWNERS_SESSIONS, (request, response) => {
-    createUnsuccessfulResponse(errors.NOT_IMPLEMENTED_YET).then((json) => {
-        response.send(json);
-    });
+    owners.logout(request.body.session)
+        .then(removed => { return createSuccessfulResponse("session", removed); })
+        .catch(error => { return createUnsuccessfulResponse(error); })
+        .then(json => { response.send(json); });
 });
 
 //Change password as a veterinarian

@@ -72,10 +72,10 @@ async function addup(collection, operations, filter){
     }
 }
 
-//update and get
+//get and update (IN THAT ORDER)
 async function upget(collection, filter, operations){
     try{
-        return await database.instance.collection(collection).findOneAndUpdate(filter, operations);
+        return (await database.instance.collection(collection).findOneAndUpdate(filter, operations)).value;
     } catch(mongo_error){
         console.log(mongo_error);
         throw env.errors.DB_ERROR;
